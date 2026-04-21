@@ -121,6 +121,18 @@ impl AlignPointElem {
     }
 }
 
+/// A newline in equation source. Rendered as a space by default, or as a line
+/// break when `math.equation.break-at-newline` is enabled.
+#[elem(Mathy)]
+pub struct MathNewlineElem {}
+
+impl MathNewlineElem {
+    /// Get the globally shared math newline element.
+    pub fn shared() -> &'static Content {
+        singleton!(Content, MathNewlineElem::new().pack())
+    }
+}
+
 /// Forced use of a certain math class.
 ///
 /// This is useful to treat certain symbols as if they were of a different

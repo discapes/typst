@@ -221,3 +221,43 @@ $ x := "a\nb\nc\nd\ne" $
 
 $ a + b \
   a + b $
+
+--- math-break-at-newline paged ---
+// Test `break-at-newline`: each source newline becomes a line break.
+#set math.equation(break-at-newline: true)
+$
+2x + 3y = 7
+4x - y  = 5
+$
+
+--- math-break-at-newline-scoped paged ---
+// Test scoping via `show math.equation.where(block: true)`, leaving inline
+// equations unaffected.
+#show math.equation.where(block: true): set math.equation(break-at-newline: true)
+Inline $a + b$ stays on one line.
+$ a + b
+  c + d $
+
+--- math-break-at-newline-blank-line paged ---
+// Test that a blank line in source produces an empty line in output.
+#set math.equation(break-at-newline: true)
+$
+x = 1
+
+y = 2
+$
+
+--- math-break-at-newline-mixed paged ---
+// Test mixing implicit newline breaks with explicit `\`.
+#set math.equation(break-at-newline: true)
+$
+a + b \
+c + d
+e + f
+$
+
+--- math-break-at-newline-align paged ---
+// Test that alignment points work across newline-induced breaks.
+#set math.equation(break-at-newline: true)
+$ x &= 1
+  y &= 2 $

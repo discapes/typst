@@ -2,7 +2,8 @@ use ecow::eco_format;
 use typst_library::diag::{At, SourceResult};
 use typst_library::foundations::{Content, NativeElement, Symbol, SymbolElem, Value};
 use typst_library::math::{
-    AlignPointElem, AttachElem, EquationElem, FracElem, LrElem, PrimesElem, RootElem,
+    AlignPointElem, AttachElem, EquationElem, FracElem, LrElem, MathNewlineElem,
+    PrimesElem, RootElem,
 };
 use typst_library::text::TextElem;
 use typst_syntax::ast::{self, AstNode, MathTextKind};
@@ -23,11 +24,22 @@ impl Eval for ast::Math<'_> {
     type Output = Content;
 
     fn eval(self, vm: &mut Vm) -> SourceResult<Self::Output> {
-        Ok(Content::sequence(
-            self.exprs()
-                .map(|expr| expr.eval_display(vm))
-                .collect::<SourceResult<Vec<_>>>()?,
-        ))
+        let mut out = Vec::new();
+        for expr in self.exprs() {
+            if let ast::Expr::Space(space) = expr {
+                let text = space.to_untyped().text();
+                let newlines = text.chars().filter(|&c| c == '\n').count();
+                if newlines > 0 {
+                    let span = space.span();
+                    for _ in 0..newlines {
+                        out.push(MathNewlineElem::shared().clone().spanned(span));
+                    }
+                    continue;
+                }
+            }
+            out.push(expr.eval_display(vm)?);
+        }
+        Ok(Content::sequence(out))
     }
 }
 

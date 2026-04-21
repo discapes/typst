@@ -52,6 +52,22 @@ pub struct EquationElem {
     #[default(false)]
     pub block: bool,
 
+    /// Whether newlines in the equation source produce line breaks.
+    ///
+    /// When enabled, each newline in the source is rendered as a line break,
+    /// equivalent to an explicit `\`. Consecutive blank lines produce multiple
+    /// line breaks. This lets you write multi-line equations without
+    /// prefixing each line with `\`.
+    ///
+    /// ```example
+    /// #show math.equation.where(block: true): set math.equation(break-at-newline: true)
+    ///
+    /// $ 2x + 3y = 7
+    ///   4x - y  = 5 $
+    /// ```
+    #[default(false)]
+    pub break_at_newline: bool,
+
     /// How to number block-level equations. Accepts a
     /// [numbering pattern or function]($numbering) taking a single number.
     ///

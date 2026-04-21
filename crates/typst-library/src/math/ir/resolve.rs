@@ -156,6 +156,12 @@ fn resolve_realized<'a, 'v, 'e>(
         resolve_symbol(elem, ctx, styles)?;
     } else if elem.is::<SpaceElem>() {
         ctx.push(MathItem::Space);
+    } else if elem.is::<MathNewlineElem>() {
+        if styles.get(EquationElem::break_at_newline) {
+            ctx.push(RawMathItem::Linebreak);
+        } else {
+            ctx.push(MathItem::Space);
+        }
     } else if let Some(elem) = elem.to_packed::<TextElem>() {
         resolve_text(elem, ctx, styles)?;
     } else if let Some(elem) = elem.to_packed::<AttachElem>() {
